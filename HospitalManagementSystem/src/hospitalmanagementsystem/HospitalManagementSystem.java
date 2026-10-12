@@ -26,11 +26,11 @@ public class HospitalManagementSystem extends JFrame {
         setLayout(null);
         
          JLabel title = new JLabel("HOSPITAL MANAGEMENT SYSTEM");
-        title.setBounds(100, 40, 300, 30);
+        title.setBounds(130, 40, 300, 30);
         add(title);
 
         btnPatients = new JButton("Patient Management");
-        btnPatients.setBounds(130, 100, 240, 40);
+        btnPatients.setBounds(110, 100, 240, 40);
         add(btnPatients);
         
         btnPatients.addActionListener(e -> {
@@ -39,19 +39,19 @@ public class HospitalManagementSystem extends JFrame {
         });
 
         btnDoctors = new JButton("Doctor Management");
-        btnDoctors.setBounds(130, 160, 240, 40);
+        btnDoctors.setBounds(110, 160, 240, 40);
         add(btnDoctors);
 
         btnAppointments = new JButton("Appointment Management");
-        btnAppointments.setBounds(130, 220, 240, 40);
+        btnAppointments.setBounds(110, 220, 240, 40);
         add(btnAppointments);
 
         btnReports = new JButton("Reports");
-        btnReports.setBounds(130, 280, 240, 40);
+        btnReports.setBounds(110, 280, 240, 40);
         add(btnReports);
 
         btnExit = new JButton("Exit");
-        btnExit.setBounds(130, 340, 240, 40);
+        btnExit.setBounds(110, 340, 240, 40);
         add(btnExit);
 
         btnExit.addActionListener(e -> {

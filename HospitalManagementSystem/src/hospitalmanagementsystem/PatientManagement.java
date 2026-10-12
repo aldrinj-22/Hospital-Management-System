@@ -253,7 +253,56 @@ public class PatientManagement extends JFrame {
         JOptionPane.showMessageDialog(this,
             "Patient deleted successfully!");
     }
+    
+    
+    
         });
+    
+    
+    btnSearch.addActionListener(event -> {
+
+    String search = JOptionPane.showInputDialog(this,
+        "Enter Patient ID or Name:");
+
+    if (search == null || search.trim().isEmpty()) {
+        return;
+    }
+
+    search = search.trim();
+    boolean found = false;
+
+    for (int i = 0; i < patients.size(); i++) {
+
+        Patient patient = patients.get(i);
+
+        if (String.valueOf(patient.id).equalsIgnoreCase(search)
+                || patient.name.equalsIgnoreCase(search)) {
+
+            JOptionPane.showMessageDialog(this,
+                "PATIENT FOUND!\n\n" +
+                "Patient ID: " + patient.id + "\n" +
+                "Name: " + patient.name + "\n" +
+                "Age: " + patient.age + "\n" +
+                "Medical History: " + patient.medicalHistory,
+                "Patient Details",
+                JOptionPane.INFORMATION_MESSAGE);
+
+            patientList.setSelectedIndex(i);
+            patientList.ensureIndexIsVisible(i);
+
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        JOptionPane.showMessageDialog(this,
+            "No patient found!",
+            "Search Result",
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+        });
+
         btnBack.addActionListener(e -> {
             dispose();
         });
