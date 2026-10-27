@@ -1,41 +1,29 @@
+
 package hospitalmanagementsystem;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.DefaultListModel;
-/**
- *
- * @author admin
- */
-public class PatientManagement extends JFrame {
-    
-   ArrayList<Patient> patients = new ArrayList<>();
- 
- 
-    JLabel lblId;
-    JLabel lblName;
-    JLabel lblAge;
-    JLabel lblHistory;
+import javax.swing.*;
 
-    JTextField txtId;
-    JTextField txtName;
-    JTextField txtAge;
-    JTextField txtHistory;
+public class PatientManagement extends JFrame implements ActionListener {
 
-    JButton btnAdd;
-    JButton btnUpdate;
-    JButton btnDelete;
-    JButton btnSearch;
-    JButton btnBack;
+    private ArrayList<Patient> patients;
+    private DefaultListModel<String> patientListModel;
+    private JList<String> patientList;
+    private JScrollPane scrollPane;
 
-    DefaultListModel<String> patientListModel = new DefaultListModel<>();
-    JList<String> patientList = new JList<>(patientListModel);
+    private JLabel lblId, lblName, lblAge, lblHistory;
+
+    private JTextField txtId, txtName, txtAge, txtHistory;
+
+    private JButton btnAdd, btnUpdate, btnDelete, btnSearch, btnBack;
 
     public PatientManagement() {
+
+        patients = new ArrayList<>();
+        patientListModel = new DefaultListModel<>();
+        patientList = new JList<>(patientListModel);
 
         setTitle("Patient Management");
         setSize(600, 600);
@@ -82,7 +70,6 @@ public class PatientManagement extends JFrame {
         btnAdd = new JButton("Add");
         btnAdd.setBounds(50, 250, 100, 35);
         add(btnAdd);
-        
 
         btnUpdate = new JButton("Update");
         btnUpdate.setBounds(160, 250, 100, 35);
@@ -96,218 +83,259 @@ public class PatientManagement extends JFrame {
         btnSearch.setBounds(380, 250, 100, 35);
         add(btnSearch);
 
-      JScrollPane scrollPane = new JScrollPane(patientList);
-      scrollPane.setBounds(50, 310, 430, 150);
-      add(scrollPane);
+        scrollPane = new JScrollPane(patientList);
+        scrollPane.setBounds(50, 310, 430, 150);
+        add(scrollPane);
 
         btnBack = new JButton("Back");
         btnBack.setBounds(200, 490, 150, 35);
         add(btnBack);
 
-        
-        btnAdd.addActionListener(e -> {
-
-         if (txtId.getText().trim().isEmpty() ||
-         txtName.getText().trim().isEmpty() ||
-         txtAge.getText().trim().isEmpty() ||
-         txtHistory.getText().trim().isEmpty()) {
-
-         JOptionPane.showMessageDialog(this,
-            "Please fill in all information!",
-            "Input Error",
-            JOptionPane.ERROR_MESSAGE);
-
-         return;
-       }
-
-      int id = Integer.parseInt(txtId.getText());
-      String name = txtName.getText();
-      int age = Integer.parseInt(txtAge.getText());
-      String history = txtHistory.getText();
-
-      Patient patient = new Patient(id, name, age, history);
-      patients.add(patient);
-
-     patientListModel.addElement(
-      "ID: " + id +
-      " | Name: " + name +
-      " | Age: " + age +
-      " | History: " + history
-     );
-
-      txtId.setText("");
-      txtName.setText("");
-      txtAge.setText("");
-      txtHistory.setText("");
-      });
-    
-    
-    btnUpdate.addActionListener(e -> {
-
-    int index = patientList.getSelectedIndex();
-
-    if (index == -1) {
-        JOptionPane.showMessageDialog(this,
-            "Please select a patient from the list!",
-            "Update Error",
-            JOptionPane.ERROR_MESSAGE);
-        return;
+        btnAdd.addActionListener(this);
+        btnUpdate.addActionListener(this);
+        btnDelete.addActionListener(this);
+        btnSearch.addActionListener(this);
+        btnBack.addActionListener(this);
     }
 
-    Patient oldPatient = patients.get(index);
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-    txtId.setText(String.valueOf(oldPatient.id));
-    txtName.setText(oldPatient.name);
-    txtAge.setText(String.valueOf(oldPatient.age));
-    txtHistory.setText(oldPatient.medicalHistory);
+        if (e.getSource() == btnAdd) {
 
-    String newId = txtId.getText();
-    String newName = txtName.getText();
-    String newAge = txtAge.getText();
-    String newHistory = txtHistory.getText();
+            if (txtId.getText().trim().isEmpty()
+                    || txtName.getText().trim().isEmpty()
+                    || txtAge.getText().trim().isEmpty()
+                    || txtHistory.getText().trim().isEmpty()) {
 
-    String idInput = JOptionPane.showInputDialog(this,
-        "Enter updated Patient ID:", newId);
+                JOptionPane.showMessageDialog(this,
+                        "Please fill in all information!",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-    if (idInput == null || idInput.trim().isEmpty()) {
-        return;
-    }
+            try {
+                int id = Integer.parseInt(txtId.getText().trim());
+                String name = txtName.getText().trim();
+                int age = Integer.parseInt(txtAge.getText().trim());
+                String history = txtHistory.getText().trim();
 
-    String nameInput = JOptionPane.showInputDialog(this,
-        "Enter updated Name:", newName);
+                if (id <= 0 || age <= 0) {
+                    JOptionPane.showMessageDialog(this,
+                            "Patient ID and Age must be greater than zero!",
+                            "Input Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-    if (nameInput == null || nameInput.trim().isEmpty()) {
-        return;
-    }
+                for (Patient patient : patients) {
+                    if (patient.id == id) {
+                        JOptionPane.showMessageDialog(this,
+                                "Patient ID already exists!",
+                                "Input Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
 
-    String ageInput = JOptionPane.showInputDialog(this,
-        "Enter updated Age:", newAge);
+                Patient patient = new Patient(id, name, age, history);
+                patients.add(patient);
 
-    if (ageInput == null || ageInput.trim().isEmpty()) {
-        return;
-    }
+                patientListModel.addElement(
+                        "ID: " + id
+                        + " | Name: " + name
+                        + " | Age: " + age
+                        + " | History: " + history
+                );
 
-    String historyInput = JOptionPane.showInputDialog(this,
-        "Enter updated Medical History:", newHistory);
+                JOptionPane.showMessageDialog(this,
+                        "Patient added successfully!");
 
-    if (historyInput == null || historyInput.trim().isEmpty()) {
-        return;
-    }
+                txtId.setText("");
+                txtName.setText("");
+                txtAge.setText("");
+                txtHistory.setText("");
 
-    try {
-        int id = Integer.parseInt(idInput);
-        int age = Integer.parseInt(ageInput);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Patient ID and Age must be numbers!",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
 
-        Patient updatedPatient = new Patient(
-            id, nameInput, age, historyInput
-        );
+        } else if (e.getSource() == btnUpdate) {
 
-        patients.set(index, updatedPatient);
+            int index = patientList.getSelectedIndex();
 
-        patientListModel.set(index,
-            "ID: " + id +
-            " | Name: " + nameInput +
-            " | Age: " + age +
-            " | History: " + historyInput
-        );
+            if (index == -1) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select a patient from the list!",
+                        "Update Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        JOptionPane.showMessageDialog(this,
-            "Patient updated successfully!");
+            Patient oldPatient = patients.get(index);
 
-        txtId.setText("");
-        txtName.setText("");
-        txtAge.setText("");
-        txtHistory.setText("");
+            String idInput = JOptionPane.showInputDialog(this,
+                    "Enter updated Patient ID:", oldPatient.id);
 
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this,
-            "Patient ID and Age must be numbers!",
-            "Input Error",
-            JOptionPane.ERROR_MESSAGE);
-    }
-        });
-    
-    
-    btnDelete.addActionListener(e -> {
+            if (idInput == null || idInput.trim().isEmpty()) {
+                return;
+            }
 
-    int index = patientList.getSelectedIndex();
+            String nameInput = JOptionPane.showInputDialog(this,
+                    "Enter updated Name:", oldPatient.name);
 
-    if (index == -1) {
-        JOptionPane.showMessageDialog(this,
-            "Please select a patient to delete!",
-            "Delete Error",
-            JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+            if (nameInput == null || nameInput.trim().isEmpty()) {
+                return;
+            }
 
-    int confirm = JOptionPane.showConfirmDialog(this,
-        "Are you sure you want to delete this patient?",
-        "Confirm Delete",
-        JOptionPane.YES_NO_OPTION);
+            String ageInput = JOptionPane.showInputDialog(this,
+                    "Enter updated Age:", oldPatient.age);
 
-    if (confirm == JOptionPane.YES_OPTION) {
+            if (ageInput == null || ageInput.trim().isEmpty()) {
+                return;
+            }
 
-        patients.remove(index);
-        patientListModel.remove(index);
+            String historyInput = JOptionPane.showInputDialog(this,
+                    "Enter updated Medical History:",
+                    oldPatient.medicalHistory);
 
-        JOptionPane.showMessageDialog(this,
-            "Patient deleted successfully!");
-    }
-    
-    
-    
-        });
-    
-    
-    btnSearch.addActionListener(event -> {
+            if (historyInput == null || historyInput.trim().isEmpty()) {
+                return;
+            }
 
-    String search = JOptionPane.showInputDialog(this,
-        "Enter Patient ID or Name:");
+            try {
+                int id = Integer.parseInt(idInput.trim());
+                int age = Integer.parseInt(ageInput.trim());
+                String name = nameInput.trim();
+                String history = historyInput.trim();
 
-    if (search == null || search.trim().isEmpty()) {
-        return;
-    }
+                if (id <= 0 || age <= 0) {
+                    JOptionPane.showMessageDialog(this,
+                            "Patient ID and Age must be greater than zero!",
+                            "Input Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-    search = search.trim();
-    boolean found = false;
+                for (int i = 0; i < patients.size(); i++) {
+                    if (i != index && patients.get(i).id == id) {
+                        JOptionPane.showMessageDialog(this,
+                                "Patient ID already exists!",
+                                "Input Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
 
-    for (int i = 0; i < patients.size(); i++) {
+                Patient updatedPatient =
+                        new Patient(id, name, age, history);
 
-        Patient patient = patients.get(i);
+                patients.set(index, updatedPatient);
 
-        if (String.valueOf(patient.id).equalsIgnoreCase(search)
-                || patient.name.equalsIgnoreCase(search)) {
+                patientListModel.set(index,
+                        "ID: " + id
+                        + " | Name: " + name
+                        + " | Age: " + age
+                        + " | History: " + history);
 
-            JOptionPane.showMessageDialog(this,
-                "PATIENT FOUND!\n\n" +
-                "Patient ID: " + patient.id + "\n" +
-                "Name: " + patient.name + "\n" +
-                "Age: " + patient.age + "\n" +
-                "Medical History: " + patient.medicalHistory,
-                "Patient Details",
-                JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Patient updated successfully!");
 
-            patientList.setSelectedIndex(i);
-            patientList.ensureIndexIsVisible(i);
+                txtId.setText("");
+                txtName.setText("");
+                txtAge.setText("");
+                txtHistory.setText("");
 
-            found = true;
-            break;
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Patient ID and Age must be numbers!",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else if (e.getSource() == btnDelete) {
+
+            int index = patientList.getSelectedIndex();
+
+            if (index == -1) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select a patient to delete!",
+                        "Delete Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to delete this patient?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+
+                patients.remove(index);
+                patientListModel.removeElementAt(index);
+
+                txtId.setText("");
+                txtName.setText("");
+                txtAge.setText("");
+                txtHistory.setText("");
+
+                JOptionPane.showMessageDialog(this,
+                        "Patient deleted successfully!");
+            }
+
+        } else if (e.getSource() == btnSearch) {
+
+            String search = JOptionPane.showInputDialog(this,
+                    "Enter Patient ID or Name:");
+
+            if (search == null || search.trim().isEmpty()) {
+                return;
+            }
+
+            search = search.trim();
+            boolean found = false;
+
+            for (int i = 0; i < patients.size(); i++) {
+
+                Patient patient = patients.get(i);
+
+                if (String.valueOf(patient.id).equalsIgnoreCase(search)
+                        || patient.name.equalsIgnoreCase(search)) {
+
+                    patientList.setSelectedIndex(i);
+                    patientList.ensureIndexIsVisible(i);
+
+                    // Display the found patient's details in the fields
+                    txtId.setText(String.valueOf(patient.id));
+                    txtName.setText(patient.name);
+                    txtAge.setText(String.valueOf(patient.age));
+                    txtHistory.setText(patient.medicalHistory);
+
+                    JOptionPane.showMessageDialog(this,
+                            "Patient found successfully!",
+                            "Search Result",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(this,
+                        "No patient found!",
+                        "Search Result",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } else if (e.getSource() == btnBack) {
+
+            dispose();
         }
     }
-
-    if (!found) {
-        JOptionPane.showMessageDialog(this,
-            "No patient found!",
-            "Search Result",
-            JOptionPane.INFORMATION_MESSAGE);
-    }
-        });
-
-        btnBack.addActionListener(e -> {
-            dispose();
-        });
-        
-       
-    }
 }
-
