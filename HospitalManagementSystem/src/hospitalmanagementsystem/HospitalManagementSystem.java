@@ -26,11 +26,22 @@ public class HospitalManagementSystem extends JFrame implements ActionListener {
         btnPatients = new JButton("Patient Management");
         btnPatients.setBounds(110, 100, 240, 40);
         add(btnPatients);
+        
+        btnPatients.addActionListener(e -> {
+        PatientManagement patientWindow = new PatientManagement();
+        patientWindow.setVisible(true);
+        });
+        
 
         btnDoctors = new JButton("Doctor Management");
         btnDoctors.setBounds(110, 160, 240, 40);
         add(btnDoctors);
 
+        btnDoctors.addActionListener(e -> {
+        Doctor doctorwindow = new Doctor();
+        doctorwindow.setVisible(true);
+        });
+        
         btnAppointments = new JButton("Appointment Management");
         btnAppointments.setBounds(110, 220, 240, 40);
         add(btnAppointments);
