@@ -72,8 +72,8 @@ public class HospitalManagementSystem extends JFrame implements ActionListener {
 
         } else if (e.getSource() == btnDoctors) {
 
-            JOptionPane.showMessageDialog(this,
-                    "Doctor Management is not available yet.");
+             Doctor doctorwindow = new Doctor();
+             doctorwindow.setVisible(true);
 
         } else if (e.getSource() == btnAppointments) {
 
