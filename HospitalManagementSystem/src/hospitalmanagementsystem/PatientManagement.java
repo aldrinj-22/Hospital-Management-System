@@ -1,38 +1,47 @@
-
 package hospitalmanagementsystem;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class PatientManagement extends JFrame implements ActionListener {
 
     private ArrayList<Patient> patients;
-    private DefaultListModel<String> patientListModel;
-    private JList<String> patientList;
+    private DefaultTableModel tableModel;
+    private JTable patientTable;
     private JScrollPane scrollPane;
 
     private JLabel lblId, lblName, lblAge, lblHistory;
-
     private JTextField txtId, txtName, txtAge, txtHistory;
-
     private JButton btnAdd, btnUpdate, btnDelete, btnSearch, btnBack;
 
     public PatientManagement() {
 
         patients = new ArrayList<>();
-        patientListModel = new DefaultListModel<>();
-        patientList = new JList<>(patientListModel);
+        
+
+        String[] columnNames = {"Patient ID", "Name", "Age", "Medical History"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        patientTable = new JTable(tableModel);
+        patientTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setTitle("Patient Management");
-        setSize(600, 600);
+        setSize(650, 650);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
         setLocationRelativeTo(null);
 
         JLabel title = new JLabel("PATIENT MANAGEMENT");
-        title.setBounds(200, 20, 250, 30);
+        title.setBounds(230, 20, 250, 30);
         add(title);
 
         lblId = new JLabel("Patient ID:");
@@ -40,7 +49,7 @@ public class PatientManagement extends JFrame implements ActionListener {
         add(lblId);
 
         txtId = new JTextField();
-        txtId.setBounds(160, 80, 300, 25);
+        txtId.setBounds(160, 80, 400, 25);
         add(txtId);
 
         lblName = new JLabel("Name:");
@@ -48,7 +57,7 @@ public class PatientManagement extends JFrame implements ActionListener {
         add(lblName);
 
         txtName = new JTextField();
-        txtName.setBounds(160, 120, 300, 25);
+        txtName.setBounds(160, 120, 400, 25);
         add(txtName);
 
         lblAge = new JLabel("Age:");
@@ -56,7 +65,7 @@ public class PatientManagement extends JFrame implements ActionListener {
         add(lblAge);
 
         txtAge = new JTextField();
-        txtAge.setBounds(160, 160, 300, 25);
+        txtAge.setBounds(160, 160, 400, 25);
         add(txtAge);
 
         lblHistory = new JLabel("Medical History:");
@@ -64,7 +73,7 @@ public class PatientManagement extends JFrame implements ActionListener {
         add(lblHistory);
 
         txtHistory = new JTextField();
-        txtHistory.setBounds(160, 200, 300, 25);
+        txtHistory.setBounds(160, 200, 400, 25);
         add(txtHistory);
 
         btnAdd = new JButton("Add");
@@ -72,23 +81,23 @@ public class PatientManagement extends JFrame implements ActionListener {
         add(btnAdd);
 
         btnUpdate = new JButton("Update");
-        btnUpdate.setBounds(160, 250, 100, 35);
+        btnUpdate.setBounds(165, 250, 100, 35);
         add(btnUpdate);
 
         btnDelete = new JButton("Delete");
-        btnDelete.setBounds(270, 250, 100, 35);
+        btnDelete.setBounds(280, 250, 100, 35);
         add(btnDelete);
 
         btnSearch = new JButton("Search");
-        btnSearch.setBounds(380, 250, 100, 35);
+        btnSearch.setBounds(395, 250, 100, 35);
         add(btnSearch);
 
-        scrollPane = new JScrollPane(patientList);
-        scrollPane.setBounds(50, 310, 430, 150);
+        scrollPane = new JScrollPane(patientTable);
+        scrollPane.setBounds(50, 310, 530, 200);
         add(scrollPane);
 
         btnBack = new JButton("Back");
-        btnBack.setBounds(200, 490, 150, 35);
+        btnBack.setBounds(235, 530, 150, 35);
         add(btnBack);
 
         btnAdd.addActionListener(this);
@@ -96,6 +105,18 @@ public class PatientManagement extends JFrame implements ActionListener {
         btnDelete.addActionListener(this);
         btnSearch.addActionListener(this);
         btnBack.addActionListener(this);
+        
+
+        patientTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = patientTable.getSelectedRow();
+            if (selectedRow != -1 && selectedRow < patients.size()) {
+                Patient p = patients.get(selectedRow);
+                txtId.setText(String.valueOf(p.id));
+                txtName.setText(p.name);
+                txtAge.setText(String.valueOf(p.age));
+                txtHistory.setText(p.medicalHistory);
+            }
+        });
     }
 
     @Override
@@ -142,12 +163,8 @@ public class PatientManagement extends JFrame implements ActionListener {
                 Patient patient = new Patient(id, name, age, history);
                 patients.add(patient);
 
-                patientListModel.addElement(
-                        "ID: " + id
-                        + " | Name: " + name
-                        + " | Age: " + age
-                        + " | History: " + history
-                );
+
+                tableModel.addRow(new Object[]{id, name, age, history});
 
                 JOptionPane.showMessageDialog(this,
                         "Patient added successfully!");
@@ -166,11 +183,11 @@ public class PatientManagement extends JFrame implements ActionListener {
 
         } else if (e.getSource() == btnUpdate) {
 
-            int index = patientList.getSelectedIndex();
+            int index = patientTable.getSelectedRow();
 
             if (index == -1) {
                 JOptionPane.showMessageDialog(this,
-                        "Please select a patient from the list!",
+                        "Please select a patient from the table!",
                         "Update Error",
                         JOptionPane.ERROR_MESSAGE);
                 return;
@@ -231,16 +248,14 @@ public class PatientManagement extends JFrame implements ActionListener {
                     }
                 }
 
-                Patient updatedPatient =
-                        new Patient(id, name, age, history);
-
+                Patient updatedPatient = new Patient(id, name, age, history);
                 patients.set(index, updatedPatient);
 
-                patientListModel.set(index,
-                        "ID: " + id
-                        + " | Name: " + name
-                        + " | Age: " + age
-                        + " | History: " + history);
+
+                tableModel.setValueAt(id, index, 0);
+                tableModel.setValueAt(name, index, 1);
+                tableModel.setValueAt(age, index, 2);
+                tableModel.setValueAt(history, index, 3);
 
                 JOptionPane.showMessageDialog(this,
                         "Patient updated successfully!");
@@ -259,7 +274,7 @@ public class PatientManagement extends JFrame implements ActionListener {
 
         } else if (e.getSource() == btnDelete) {
 
-            int index = patientList.getSelectedIndex();
+            int index = patientTable.getSelectedRow();
 
             if (index == -1) {
                 JOptionPane.showMessageDialog(this,
@@ -277,7 +292,7 @@ public class PatientManagement extends JFrame implements ActionListener {
             if (confirm == JOptionPane.YES_OPTION) {
 
                 patients.remove(index);
-                patientListModel.removeElementAt(index);
+                tableModel.removeRow(index);
 
                 txtId.setText("");
                 txtName.setText("");
@@ -307,10 +322,9 @@ public class PatientManagement extends JFrame implements ActionListener {
                 if (String.valueOf(patient.id).equalsIgnoreCase(search)
                         || patient.name.equalsIgnoreCase(search)) {
 
-                    patientList.setSelectedIndex(i);
-                    patientList.ensureIndexIsVisible(i);
+                    patientTable.setRowSelectionInterval(i, i);
+                    patientTable.scrollRectToVisible(patientTable.getCellRect(i, 0, true));
 
-                    // Display the found patient's details in the fields
                     txtId.setText(String.valueOf(patient.id));
                     txtName.setText(patient.name);
                     txtAge.setText(String.valueOf(patient.age));
@@ -334,7 +348,6 @@ public class PatientManagement extends JFrame implements ActionListener {
             }
 
         } else if (e.getSource() == btnBack) {
-
             dispose();
         }
     }
