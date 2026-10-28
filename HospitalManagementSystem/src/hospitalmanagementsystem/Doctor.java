@@ -4,101 +4,91 @@
  */
 package hospitalmanagementsystem;
 
-/**
- *
- * @author Johnroe
- */
-import java.util.LinkedList;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author admin
+ * @author Johnroe / admin
  */
-public class Doctor extends JFrame{
+public class Doctor extends JFrame {
     
-    private LinkedList<String> linklist;
-    private DefaultListModel<String> model;
-    private JLabel name,id,specialty,patientid,title;
-    private JTextField txtname,txtid,txtspecialty,txtpatient;
-    private JButton add,update,delete,search;
+    private DefaultTableModel model;
+    private JTable table;
+    private JLabel name, id, specialty, patientid, title;
+    private JTextField txtname, txtid, txtspecialty, txtpatient;
+    private JButton add, update, delete, search;
     private JScrollPane scrollpane;
-    private JList list;
     
-    Doctor(){
-    linklist = new LinkedList<>();
-    model = new DefaultListModel<>();
-    
-    setSize(600, 600);
-    setLayout(null);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
-    
-    list = new JList<>(model);
-    scrollpane = new JScrollPane(list);
-    scrollpane.setBounds(50, 310, 500, 100);
-    add(scrollpane);
-    
+    public Doctor() {
+        setTitle("Doctors Management System");
+        setSize(650, 600);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-    title = new JLabel("DOCTORS MANAGEMENT");
-    title.setBounds(200,40, 220, 15);
-    add(title);
     
-    name = new JLabel("Doctors name: ");
-    name.setBounds(50, 80, 130, 10);
-    add(name);
+        title = new JLabel("DOCTORS MANAGEMENT");
+        title.setBounds(220, 20, 200, 20);
+        add(title);
+        
+        
+        name = new JLabel("Doctor's Name: ");
+        name.setBounds(50, 70, 130, 20);
+        add(name);
+        
+        id = new JLabel("Doctor's ID: ");
+        id.setBounds(50, 110, 130, 20);
+        add(id);
+        
+        specialty = new JLabel("Doctor's Specialty: ");
+        specialty.setBounds(50, 150, 130, 20);
+        add(specialty);
+        
+        patientid = new JLabel("Patient ID: ");
+        patientid.setBounds(50, 190, 130, 20);
+        add(patientid);
+        
+       
+        txtname = new JTextField();
+        txtname.setBounds(200, 70, 250, 25);
+        add(txtname);
+        
+        txtid = new JTextField();
+        txtid.setBounds(200, 110, 250, 25);
+        add(txtid);
+        
+        txtspecialty = new JTextField();
+        txtspecialty.setBounds(200, 150, 250, 25);
+        add(txtspecialty);
+        
+        txtpatient = new JTextField();
+        txtpatient.setBounds(200, 190, 250, 25);
+        add(txtpatient);
+        
     
-    id = new JLabel("Doctors Id:  ");
-    id.setBounds(50,120, 100, 10);
-    add(id);
-    
-    specialty = new JLabel("Doctors specialty:  ");
-    specialty.setBounds(50, 160, 130, 20);
-    add(specialty);
-    
-    patientid = new JLabel("Patient Id:  ");
-    patientid.setBounds(50, 200, 180, 20);
-    add(patientid);
-    
-    txtname = new JTextField();
-    txtname.setBounds(200,80, 180, 20);
-    add(txtname);
-    
-    txtid = new JTextField();
-    txtid.setBounds(200,120, 180, 20);
-    add(txtid);
-    
-    txtspecialty = new JTextField();
-    txtspecialty.setBounds(200,160, 180, 20);
-    add(txtspecialty);
-    
-    txtpatient = new JTextField();
-    txtpatient.setBounds(200,200, 180, 20);
-    add(txtpatient);
-    
-    add = new JButton("Add ");
-    add.setBounds(50, 250, 80, 25);
-    add(add);
-    
-    delete = new JButton("Delete ");
-    delete.setBounds(150, 250, 80, 25);
-    add(delete);
-    
-    update = new JButton("Update ");
-    update.setBounds(250, 250, 80, 25);
-    add(update);
-    
-    search = new JButton("Search ");
-    search.setBounds(350, 250, 80, 25);
-    add(search);
-    
+        add = new JButton("Add");
+        add.setBounds(50, 240, 90, 30);
+        add(add);
+        
+        delete = new JButton("Delete");
+        delete.setBounds(155, 240, 90, 30);
+        add(delete);
+        
+        update = new JButton("Update");
+        update.setBounds(260, 240, 90, 30);
+        add(update);
+        
+        search = new JButton("Search");
+        search.setBounds(365, 240, 90, 30);
+        add(search);
 
+        
+        String[] columnNames = {"Doctor Name", "Doctor ID", "Specialty", "Patient ID"};
+        model = new DefaultTableModel(columnNames, 0);
+        table = new JTable(model);
+        
+        scrollpane = new JScrollPane(table);
+        scrollpane.setBounds(50, 300, 530, 220);
+        add(scrollpane);
     }
-    
 }
