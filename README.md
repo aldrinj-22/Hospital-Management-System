@@ -1,1 +1,1 @@
-# Hospital-Management-System-DIT-2-1.Group-4
+# Hospital-Management-System
