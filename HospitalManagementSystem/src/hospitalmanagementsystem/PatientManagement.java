@@ -39,6 +39,7 @@ public class PatientManagement extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
         setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
 
         JLabel title = new JLabel("PATIENT MANAGEMENT");
         title.setBounds(230, 20, 250, 30);

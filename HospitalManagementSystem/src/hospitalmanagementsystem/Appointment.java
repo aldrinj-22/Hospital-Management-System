@@ -27,6 +27,7 @@ public class Appointment extends JFrame{
         setSize(1000, 700);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         
         label = new JLabel("HOSPITAL MANAGEMENT SYSTEM - APPOINTMENT DASHBOARD");
         label.setBounds(300, 10, 500, 60);

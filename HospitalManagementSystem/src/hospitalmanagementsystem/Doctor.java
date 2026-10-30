@@ -25,6 +25,7 @@ public class Doctor extends JFrame {
         setSize(650, 600);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         
     
         title = new JLabel("DOCTORS MANAGEMENT");
