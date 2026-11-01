@@ -1,4 +1,3 @@
-
 package hospitalmanagementsystem;
 
 import java.awt.event.ActionEvent;
@@ -19,7 +18,7 @@ public class Doctor extends JFrame implements ActionListener {
 
     private JTextField txtname, txtid, txtspecialty, txtpatient;
 
-    private JButton add, update, delete, search;
+    private JButton add, update, delete, search, back;
 
     public Doctor() {
 
@@ -31,12 +30,10 @@ public class Doctor extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Title
         title = new JLabel("DOCTORS MANAGEMENT");
         title.setBounds(220, 20, 250, 20);
         add(title);
 
-        // Labels
         name = new JLabel("Doctor's Name:");
         name.setBounds(50, 70, 130, 20);
         add(name);
@@ -53,7 +50,6 @@ public class Doctor extends JFrame implements ActionListener {
         patientid.setBounds(50, 190, 130, 20);
         add(patientid);
 
-        // Text Fields
         txtname = new JTextField();
         txtname.setBounds(200, 70, 250, 25);
         add(txtname);
@@ -70,7 +66,6 @@ public class Doctor extends JFrame implements ActionListener {
         txtpatient.setBounds(200, 190, 250, 25);
         add(txtpatient);
 
-        // Buttons
         add = new JButton("Add");
         add.setBounds(50, 240, 90, 30);
         add(add);
@@ -87,7 +82,6 @@ public class Doctor extends JFrame implements ActionListener {
         search.setBounds(365, 240, 90, 30);
         add(search);
 
-        // JTable
         String[] columnNames = {
             "Doctor Name",
             "Doctor ID",
@@ -99,24 +93,23 @@ public class Doctor extends JFrame implements ActionListener {
         table = new JTable(model);
 
         scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50, 300, 530, 220);
+        scrollPane.setBounds(50, 290, 530, 200);
         add(scrollPane);
 
-        // Action Listeners
+        back = new JButton("Back");
+        back.setBounds(250, 505, 150, 30);
+        add(back);
+
         add.addActionListener(this);
         update.addActionListener(this);
         delete.addActionListener(this);
         search.addActionListener(this);
+        back.addActionListener(this);
 
-        // Select a row to display its information
         table.getSelectionModel().addListSelectionListener(e -> {
-
             if (!e.getValueIsAdjusting()) {
-
                 int row = table.getSelectedRow();
-
                 if (row != -1) {
-
                     txtname.setText(model.getValueAt(row, 0).toString());
                     txtid.setText(model.getValueAt(row, 1).toString());
                     txtspecialty.setText(model.getValueAt(row, 2).toString());
@@ -129,7 +122,6 @@ public class Doctor extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        // ADD DOCTOR
         if (e.getSource() == add) {
 
             String doctorName = txtname.getText().trim();
@@ -153,7 +145,6 @@ public class Doctor extends JFrame implements ActionListener {
                 boolean duplicate = false;
 
                 for (String[] doctor : linkedList) {
-
                     if (doctor[1].equals(doctorID)) {
                         duplicate = true;
                         break;
@@ -185,20 +176,15 @@ public class Doctor extends JFrame implements ActionListener {
                 }
             }
 
-        // DELETE DOCTOR
         } else if (e.getSource() == delete) {
 
             int row = table.getSelectedRow();
 
             if (row != -1) {
-
                 linkedList.remove(row);
                 model.removeRow(row);
-
                 clearFields();
-
             } else {
-
                 JOptionPane.showMessageDialog(
                         this,
                         "Please select a doctor to delete.",
@@ -207,7 +193,6 @@ public class Doctor extends JFrame implements ActionListener {
                 );
             }
 
-        // UPDATE DOCTOR
         } else if (e.getSource() == update) {
 
             int row = table.getSelectedRow();
@@ -248,7 +233,6 @@ public class Doctor extends JFrame implements ActionListener {
                 }
 
             } else {
-
                 JOptionPane.showMessageDialog(
                         this,
                         "Please select a doctor to update.",
@@ -257,41 +241,33 @@ public class Doctor extends JFrame implements ActionListener {
                 );
             }
 
-        // SEARCH DOCTOR
         } else if (e.getSource() == search) {
 
             String doctorID = txtid.getText().trim();
 
             if (doctorID.isEmpty()) {
-
                 JOptionPane.showMessageDialog(
                         this,
                         "Please enter the Doctor's ID.",
                         "Input Error",
                         JOptionPane.ERROR_MESSAGE
                 );
-
             } else {
 
                 boolean found = false;
 
                 for (int i = 0; i < linkedList.size(); i++) {
-
                     if (linkedList.get(i)[1].equals(doctorID)) {
-
                         table.setRowSelectionInterval(i, i);
-
                         table.scrollRectToVisible(
                                 table.getCellRect(i, 0, true)
                         );
-
                         found = true;
                         break;
                     }
                 }
 
                 if (!found) {
-
                     JOptionPane.showMessageDialog(
                             this,
                             "Doctor not found.",
@@ -300,17 +276,20 @@ public class Doctor extends JFrame implements ActionListener {
                     );
                 }
             }
+
+        } else if (e.getSource() == back) {
+            dispose(); // Closes the current Doctor window
+            
+            // Uncomment the line below if you want to return to your Main Menu window:
+            // new MainMenu().setVisible(true);
         }
     }
 
-    // Clear all text fields
     private void clearFields() {
-
         txtname.setText("");
         txtid.setText("");
         txtspecialty.setText("");
         txtpatient.setText("");
-
         table.clearSelection();
     }
 }
